@@ -6,6 +6,7 @@ import collections
 ICD_phecode_file = pathlib.Path("resources/ICD_phecode_map.csv")
 HPO_phecode_file = pathlib.Path("resources/HPO_phecode_map.csv")
 HPO_gene_file = pathlib.Path("resources/phenotype_to_genes.txt") #Note, this is actually a tsv file
+gene_HPO_file = pathlib.Path("resources/genes_to_phenotype.txt") #also a tsv file mapping genes to HPO
 
 icd_phecode_map = {}
 icd_naming = {}
@@ -15,6 +16,8 @@ phecode_hpo_map = collections.defaultdict(list) #one-to-many map of hpo terms as
 hpo_naming = {}
 
 hpo_gene_map = collections.defaultdict(list) #one-to-many map of genes associated with an HPO term
+
+gene_hpo_map = collections.defaultdict(list)
 
 with ICD_phecode_file.open('r') as open_file:
     file_reader = csv.reader(open_file)
@@ -39,6 +42,14 @@ with HPO_gene_file.open('r') as open_file:
     for row in file_reader:
         hpo_id, _, _, gene, _ = row
         hpo_gene_map[hpo_id].append(gene)
+
+with gene_HPO_file.open('r') as open_file:
+    file_reader = csv.reader(open_file, delimiter='\t')
+    file_reader.__next__()
+    for row in file_reader:
+        _, gene_id, _, hpo_id, _, _ = row
+        gene_hpo_map[gene_id].append(hpo_id)
+
 ###
 
 def make_icd_gene_list(icd_code):
@@ -49,5 +60,8 @@ def make_icd_gene_list(icd_code):
 def make_icd_hpo_list(icd_code):
     return set(phecode_hpo_map[icd_phecode_map[icd_code]])
     
-def make_hpo_gene_list(hpo_code)
+def make_hpo_gene_list(hpo_code):
     return set(hpo_gene_map[hpo_code])
+
+def make_gene_hpo_list(gene_id):
+    return set(gene_hpo_map[gene_id])
