@@ -35,17 +35,14 @@ else:
     with SNOMED_ICD_file.open('r', encoding='utf-8') as open_file:
         file_reader = csv.reader(open_file, delimiter='\t')
         file_reader.__next__()
-        empty_counter, ambiguous_counter = 0, 0
         for row in file_reader:
             snomed_id, snomed_name, icd_code = row[5], row[6], row[11]
             if icd_code == '':
                 #some terms with legitimate icd codes have another entry with empty icd
-                empty_counter += 1
                 continue
             elif icd_code[-1] == '?': 
                 #some also have the noted character; notation for entry conveys some ambiguity
                 icd_code = icd_code[:-1]
-                ambiguous_counter += 1
             snomed_icd_map[snomed_id].append(icd_code)
             snomed_naming[snomed_id] = snomed_name
         print(f"SNOMED-ICD map - empty entries: {empty_counter}; ambiguous entries: {ambiguous_counter}")
@@ -97,8 +94,24 @@ def make_snomed_gene_list(snomed_code):
     icd_codes = snomed_icd_map[snomed_code]
     return set([gene for icd in icd_codes for gene in make_icd_gene_list[icd]])
 
+def convert_icd_phecode(icd_code, verbose=True):
+    '''
+        if no matching phecode directly to icd, attempts to look systematically through parents until nothing left 
+        returns '' if there is no phecode
+    '''
+    while True:
+        try:
+            return icd_phecode_map[icd_code]
+        except KeyError:
+            if '.' not in icd_code:
+                if verbose and icd_code[0] not in 'VUWXYZ': #not in etiologies of external injuries or special code
+                    print(f"{icd_code} has no phecode associated with it")
+                return ''
+            else:
+                icd_code = icd_code[:-1]
+
 def make_icd_hpo_list(icd_code):
-    return set(phecode_hpo_map[icd_phecode_map[icd_code]])
+    return set(phecode_hpo_map[convert_icd_phecode(icd_code)])
 
 def make_snomed_hpo_list(snomed_code):
     icd_codes = snomed_icd_map[snomed_code]
