@@ -102,7 +102,7 @@ def make_icd_hpo_list(icd_code):
 
 def make_snomed_hpo_list(snomed_code):
     icd_codes = snomed_icd_map[snomed_code]
-    return set([hpo_code for icd_code in ice_codes for hpo_code in make_icd_hpo_list[icd_code]])
+    return set([hpo_code for icd_code in icd_codes for hpo_code in make_icd_hpo_list[icd_code]])
 
 def make_gene_hpo_list(gene_id):
     return set(gene_hpo_map[gene_id])
