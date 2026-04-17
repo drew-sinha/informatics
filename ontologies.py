@@ -3,12 +3,12 @@ import csv
 import collections
 
 ### Initialization code
-ICD_phecode_file = pathlib.Path("resources/ICD_phecode_map.csv")
-HPO_phecode_file = pathlib.Path("resources/HPO_phecode_map.csv")
-HPO_gene_file = pathlib.Path("resources/phenotype_to_genes.txt") #Note, this is actually a tsv file
-SNOMED_ICD_file = pathlib.Path("resources").glob("tls_Icd10cmHumanReadableMap*.tsv")
+ICD_phecode_file = pathlib.Path(__file__).resolve().parent / "resources" / "ICD_phecode_map.csv"
+HPO_phecode_file = pathlib.Path(__file__).resolve().parent / "resources" / "HPO_phecode_map.csv"
+HPO_gene_file = pathlib.Path(__file__).resolve().parent / "resources" / "phenotype_to_genes.txt" # Note, this is actually a tsv
+SNOMED_ICD_file = (pathlib.Path(__file__).resolve().parent / "resources").glob("tls_Icd10cmHumanReadableMap*.tsv")
 
-gene_HPO_file = pathlib.Path("resources/genes_to_phenotype.txt") #also a tsv file mapping genes to HPO
+gene_HPO_file = pathlib.Path(__file__).resolve().parent / "resources" / "genes_to_phenotype.txt" # also a tsv
 
 snomed_icd_map = collections.defaultdict(list) #one-to-many map of icd codes associated with a snomed
 snomed_naming = {} #the naming for a snomed id remains one-to-one
