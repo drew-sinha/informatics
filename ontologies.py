@@ -94,7 +94,7 @@ def make_snomed_gene_list(snomed_code):
     icd_codes = snomed_icd_map[snomed_code]
     return set([gene for icd in icd_codes for gene in make_icd_gene_list[icd]])
 
-def convert_icd_phecode(icd_code, verbose=True):
+def convert_icd_phecode(icd_code):
     '''
         if no matching phecode directly to icd, attempts to look systematically through parents until nothing left 
         returns '' if there is no phecode
@@ -104,8 +104,6 @@ def convert_icd_phecode(icd_code, verbose=True):
             return icd_phecode_map[icd_code]
         except KeyError:
             if '.' not in icd_code:
-                if verbose and icd_code[0] not in 'VUWXYZ': #not in etiologies of external injuries or special code
-                    print(f"{icd_code} has no phecode associated with it")
                 return ''
             else:
                 icd_code = icd_code[:-1]
