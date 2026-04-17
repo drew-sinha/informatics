@@ -85,23 +85,24 @@ with gene_HPO_file.open('r') as open_file:
         gene_hpo_map[gene_id].append(hpo_id)
 
 ###
-def make_snomed_gene_list(snomed_code):
-    icd_codes = snomed_icd_map[snomed_code]
-    return set([gene for icd in icd_codes for gene in make_icd_gene_list[icd]])
-    
+def make_hpo_gene_list(hpo_code):
+    return set(hpo_gene_map[hpo_code])
+
 def make_icd_gene_list(icd_code):
     hpo_codes = phecode_hpo_map[icd_phecode_map[icd_code]]
     genes = set([gene for hpo in hpo_codes for gene in hpo_gene_map[hpo]])
     return genes
 
-def make_hpo_gene_list(hpo_code):
-    return set(hpo_gene_map[hpo_code])
+def make_snomed_gene_list(snomed_code):
+    icd_codes = snomed_icd_map[snomed_code]
+    return set([gene for icd in icd_codes for gene in make_icd_gene_list[icd]])
 
 def make_icd_hpo_list(icd_code):
     return set(phecode_hpo_map[icd_phecode_map[icd_code]])
-    
-def make_hpo_gene_list(hpo_code):
-    return set(hpo_gene_map[hpo_code])
+
+def make_snomed_hpo_list(snomed_code):
+    icd_codes = snomed_icd_map[snomed_code]
+    return set([hpo_code for icd_code in ice_codes for hpo_code in make_icd_hpo_list[icd_code]])
 
 def make_gene_hpo_list(gene_id):
     return set(gene_hpo_map[gene_id])
