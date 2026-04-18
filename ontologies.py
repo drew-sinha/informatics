@@ -45,7 +45,6 @@ else:
                 icd_code = icd_code[:-1]
             snomed_icd_map[snomed_id].append(icd_code)
             snomed_naming[snomed_id] = snomed_name
-        print(f"SNOMED-ICD map - empty entries: {empty_counter}; ambiguous entries: {ambiguous_counter}")
 
 gene_hpo_map = collections.defaultdict(list)
 
